@@ -1,0 +1,24 @@
+"""Seed program for a SQL query optimization experiment.
+
+AlphaEvolve mutates only the OPTIMIZED_SQL string inside the EVOLVE-BLOCK.
+It starts identical to the reference (baseline) query and must always return
+the same result set — the evaluator rejects any rewrite whose rows differ.
+
+Database: {{DB}}
+"""
+
+from typing import Any, Mapping
+
+
+# EVOLVE-BLOCK-START
+OPTIMIZED_SQL = """{{OPTIMIZED_SQL}}"""
+# EVOLVE-BLOCK-END
+
+
+def evaluate(eval_inputs: Mapping[str, Any]) -> dict[str, Any]:
+    del eval_inputs
+    return {"sql": OPTIMIZED_SQL}
+
+
+if __name__ == "__main__":
+    print(evaluate({})["sql"])

@@ -1,0 +1,40 @@
+# {{TITLE}}
+
+## Task
+
+Rewrite the SQL query below so it returns the **same result set** but runs
+**faster** on {{DB}}. Only the `OPTIMIZED_SQL` string inside the
+`EVOLVE-BLOCK` in `initial_program.py` may change. The schema, the data, and
+the reference query are frozen.
+
+## Reference (baseline) query
+
+```sql
+{{OPTIMIZED_SQL}}
+```
+
+## Metric
+
+- **Name:** `speedup` — `baseline_median_ms / candidate_median_ms`.
+- **Direction:** maximize.
+- **Failure:** `-1e12` for any incorrect result, wrong column signature,
+  timeout, syntax error, or forbidden statement.
+
+## Correctness protocol (enforced by the evaluator)
+
+Every candidate must reproduce the baseline exactly. The evaluator checks, in
+order:
+
+1. **Syntax** — single read-only `SELECT`/`WITH`; no DDL/DML.
+2. **Column signature** — same columns, same order, same types.
+3. **Result hash** — an order-agnostic fingerprint of the full row multiset
+   must equal the baseline's.
+4. **Timing** — median of 3 server-side timed runs.
+
+A rewrite that changes any value, row, column name, or type is rejected. Focus
+on plan-level improvements (join order, pre-aggregation, removing redundant
+scans, predicate pushdown) that preserve exact results.
+
+## Notes / constraints
+
+{{HINTS}}

@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments & Local Credentials
+.env
+.env*
+**/.env
+**/.env*
+!.env.example
+!**/.env.example
+.venv
+venv/
+ENV/
+
+# Experiments output
+exp_*/
+experiment_*/
+**/exp_*/
+**/experiment_*/
+optimization_results.md
+baseline.json
+**/baseline.json
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
