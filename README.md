@@ -93,30 +93,6 @@ git clone https://github.com/yanbasic/alpha-evolve-sql-optimizer.git ~/.gemini/c
 
 ## Usage
 
-### 1. Interactive CLI Wizard
-
-Launch the terminal wizard directly:
-
-```bash
-python3 tool/sqlopt.py wizard
-```
-
-The wizard guides you step-by-step through 6 distinct phases:
-1. **Preflight Verification:** Validates `gcloud` authentication, `ae` CLI setup, Discovery Engine API access, and database drivers.
-2. **Database Engine & Connectivity:** Select target architecture (PostgreSQL, ClickHouse, Hologres, Oracle, etc.) and configure credentials via `.env` or environment variables.
-3. **Query Ingestion & Seed Strategy:** Provide slow SQL query and schema metadata.
-4. **Optimization Profile Selection:**
-   * `[1] Feasibility Verification` (10 programs, concurrency: 2, timeout: 60s)
-   * `[2] Standard Evolutionary Search` (20 programs, concurrency: 3, timeout: 120s)
-   * `[3] Exhaustive Global Optimization` (50 programs, concurrency: 5, timeout: 300s)
-   * `[4] Custom Parameter Profile`
-5. **Baseline Measurement:** Scaffolds experiment workspace and records the 4-gate baseline runtime and result hash fingerprint.
-6. **Specification Review & Submit:** Renders the full experiment specification card for explicit user approval before launching the AlphaEvolve evolutionary search loop.
-
----
-
-### 2. Natural Language Agent Prompts
-
 Trigger the skill in your AI assistant with a natural prompt:
 
 ```text
