@@ -32,11 +32,12 @@ wheels/
 venv/
 ENV/
 
-# Experiments output
+# Experiments & Scratch output
 exp_*/
 experiment_*/
 **/exp_*/
 **/experiment_*/
+scratch/
 optimization_results.md
 baseline.json
 **/baseline.json
