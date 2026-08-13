@@ -90,16 +90,21 @@ gcloud auth application-default set-quota-project "$PROJECT_ID" --quiet 2>/dev/n
 echo "🔹 [2/6] 检查/启用 Discovery Engine API (discoveryengine.googleapis.com)..."
 gcloud services enable discoveryengine.googleapis.com --project="$PROJECT_ID" 2>/dev/null || true
 
-# 5. 配置 IAM 角色权限
+# 5. 配置 IAM 角色权限 (自动区分 user 与 serviceAccount)
 USER_EMAIL=$(gcloud config get-value account 2>/dev/null || python3 -c "import json, os; p=os.path.expanduser('~/.config/gcloud/application_default_credentials.json'); d=json.load(open(p)) if os.path.exists(p) else {}; print(d.get('account',''))" 2>/dev/null)
 if [ -n "$USER_EMAIL" ] && [ "$USER_EMAIL" != "(unset)" ]; then
-    echo "🔹 [3/6] 授予 IAM 角色权限 ($USER_EMAIL)..."
+    if [[ "$USER_EMAIL" == *"gserviceaccount.com"* ]]; then
+        MEMBER="serviceAccount:$USER_EMAIL"
+    else
+        MEMBER="user:$USER_EMAIL"
+    fi
+    echo "🔹 [3/6] 授予 IAM 角色权限 ($MEMBER)..."
     gcloud projects add-iam-policy-binding "$PROJECT_ID" \
-        --member="user:$USER_EMAIL" \
+        --member="$MEMBER" \
         --role="roles/discoveryengine.admin" --quiet 2>/dev/null || true
 
     gcloud projects add-iam-policy-binding "$PROJECT_ID" \
-        --member="user:$USER_EMAIL" \
+        --member="$MEMBER" \
         --role="roles/iam.serviceAccountTokenCreator" --quiet 2>/dev/null || true
 else
     echo "🔹 [3/6] 跳过个人账号 IAM 绑定 (使用默认环境服务凭据)"
@@ -154,14 +159,22 @@ ae config --project="$PROJECT_ID" \
 
 # 8. 验证云端连通性
 echo "🔹 [6/6] 执行 AlphaEvolve API 连通性终检..."
-ae --json config test
-
-echo ""
-echo "============================================================"
-echo "  🎉 恭喜！AlphaEvolve 环境配置已 100% 跑通！"
-echo "============================================================"
-echo "您现在可以在 AI Coding Agent (如 Antigravity / Gemini CLI) 中直接输入："
-echo ""
-echo "  使用 AlphaEvolve 优化这条 PostgreSQL 查询："
-echo "  SELECT * FROM your_table WHERE ...;"
-echo ""
+if ae --json config test; then
+    echo ""
+    echo "============================================================"
+    echo "  🎉 恭喜！AlphaEvolve 环境配置已 100% 跑通！"
+    echo "============================================================"
+    echo "您现在可以在 AI Coding Agent (如 Antigravity / Gemini CLI) 中直接输入："
+    echo ""
+    echo "  使用 AlphaEvolve 优化这条 PostgreSQL 查询："
+    echo "  SELECT * FROM your_table WHERE ...;"
+    echo ""
+else
+    echo ""
+    echo "⚠️ 连通性测试未通过 (403 权限不足)。排查建议："
+    echo "1. 如果当前使用的是 GCE VM 默认服务账号 ($USER_EMAIL)，请确保项目管理员授予了以下权限："
+    echo "   gcloud projects add-iam-policy-binding $PROJECT_ID --member=\"$MEMBER\" --role=\"roles/discoveryengine.admin\""
+    echo "   gcloud projects add-iam-policy-binding $PROJECT_ID --member=\"$MEMBER\" --role=\"roles/iam.serviceAccountTokenCreator\""
+    echo "2. 或者运行 'gcloud auth application-default login' 登录您个人的 GCP 账号以替代 VM 默认服务账号。"
+    echo "3. 确认该 GCP 项目已激活 Gemini Enterprise 许可。"
+fi
