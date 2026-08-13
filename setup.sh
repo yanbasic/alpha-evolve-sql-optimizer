@@ -138,9 +138,12 @@ AE_GIT_URL="git+https://github.com/Google-Cloud-AI/alphaevolve-on-googlecloud.gi
 
 if ! command -v ae &> /dev/null; then
     if command -v uv &> /dev/null; then
-        uv tool install --force "$AE_GIT_URL"
-    else
+        uv tool install --force --default-index https://pypi.org/simple "$AE_GIT_URL" || \
+        uv tool install --force "$AE_GIT_URL" || \
+        pip install --index-url https://pypi.org/simple "$AE_GIT_URL" || \
         pip install "$AE_GIT_URL"
+    else
+        pip install --index-url https://pypi.org/simple "$AE_GIT_URL" || pip install "$AE_GIT_URL"
     fi
 fi
 

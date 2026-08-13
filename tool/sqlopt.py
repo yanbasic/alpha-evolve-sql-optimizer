@@ -701,9 +701,9 @@ def cmd_install_ae(args) -> None:
     method = (args.method or "pip").lower()
     print(f"Installing AlphaEvolve (ae) CLI via {method}...")
     if method == "uv":
-        res = subprocess.run(["uv", "tool", "install", "--force", AE_GIT_URL])
+        res = subprocess.run(["uv", "tool", "install", "--force", "--default-index", "https://pypi.org/simple", AE_GIT_URL])
     else:
-        res = subprocess.run([sys.executable, "-m", "pip", "install", AE_GIT_URL])
+        res = subprocess.run([sys.executable, "-m", "pip", "install", "--index-url", "https://pypi.org/simple", AE_GIT_URL])
 
     if res.returncode == 0:
         print("AlphaEvolve CLI installation completed successfully.")
