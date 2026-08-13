@@ -2,13 +2,22 @@
 
 本项目是专为 **AI 编程助手（Coding Agent）** 设计的交互式 SQL 优化技能插件（Skill）。
 
+环境检测、`ae` CLI 安装及数据库驱动将由 Agent 在运行时**自动按需装配**。
+
 ---
 
 ## 1. 准备工作
 
-* **AI Coding Agent**：支持 Skill 扩展的编程助手（如 Antigravity、Gemini CLI、Claude Code、Cursor、Windsurf 等）。
-* **Google Cloud SDK**：本地已安装 [`gcloud`](https://docs.cloud.google.com/sdk/docs/install-sdk) 命令行工具。
-* **GCP 许可**：目标 GCP 项目已开通 **Gemini Enterprise** 许可。
+在开始前，请确认满足以下基础条件：
+
+1. **AI Coding Agent**：已安装并使用支持 Skill 扩展的编程助手（例如：Antigravity、Gemini CLI、Claude Code、Cursor、Windsurf 等）。
+2. **GCP 本地凭据登录**：在终端完成应用默认凭据认证：
+   ```bash
+   gcloud auth application-default login
+   ```
+3. **GCP 项目权限与许可**：
+   * 目标 GCP 项目已开通 **Gemini Enterprise** 许可。
+   * 操作账号已被授予 `roles/discoveryengine.admin` 及 `roles/iam.serviceAccountTokenCreator` 角色。
 
 ---
 
@@ -26,24 +35,13 @@ git clone https://github.com/yanbasic/alpha-evolve-sql-optimizer.git ~/.gemini/c
 
 ---
 
-## 3. 一键配置环境与云端资源
+## 3. 验证与使用
 
-直接运行一键配置脚本 [setup.sh](https://github.com/yanbasic/alpha-evolve-sql-optimizer/blob/main/setup.sh)（自动完成 ADC 登录、Project Number 解析、API 启用、IAM 授权、Engine 预配及连通性测试）：
+打开 **AI Coding Agent**（如 Antigravity / Gemini CLI 等）对话窗口，直接发送包含 **“AlphaEvolve”（请使用全称）** 的优化请求。
 
-```bash
-# 方式 A：克隆项目后在根目录运行（推荐）
-./setup.sh
+Agent 会自动识别目标数据库、在后台自动执行环境预检并装配所需驱动，随后启动交互式优化向导：
 
-# 方式 B：通过 curl 远程一键执行
-bash <(curl -sSL https://raw.githubusercontent.com/yanbasic/alpha-evolve-sql-optimizer/main/setup.sh)
-```
-
----
-
-## 4. 验证与使用
-
-打开 **AI Coding Agent**（如 Antigravity / Gemini CLI）对话框，发送包含 **“AlphaEvolve”（请使用全称）** 的优化请求。Agent 将自动检测环境、按需安装数据库驱动并启动交互向导：
-
+### 示例 Prompt
 ```text
 使用 AlphaEvolve 优化这条 PostgreSQL 查询：
 SELECT
