@@ -31,11 +31,11 @@ git clone https://github.com/yanbasic/alpha-evolve-sql-optimizer.git ~/.gemini/c
 直接运行一键配置脚本 [setup.sh](https://github.com/yanbasic/alpha-evolve-sql-optimizer/blob/main/setup.sh)（自动完成 ADC 登录、Project Number 解析、API 启用、IAM 授权、Engine 预配及连通性测试）：
 
 ```bash
-# 方式 A：克隆项目后在根目录运行
+# 方式 A：克隆项目后在根目录运行（推荐）
 ./setup.sh
 
 # 方式 B：通过 curl 远程一键执行
-curl -sSL https://raw.githubusercontent.com/yanbasic/alpha-evolve-sql-optimizer/main/setup.sh | bash
+bash <(curl -sSL https://raw.githubusercontent.com/yanbasic/alpha-evolve-sql-optimizer/main/setup.sh)
 ```
 
 ---

@@ -20,7 +20,11 @@ fi
 echo "🔹 [1/6] 检查本地 Google Cloud 认证凭据..."
 if ! gcloud auth application-default print-access-token &>/dev/null; then
     echo "👉 正在引导登录本地凭据 (gcloud auth application-default login)..."
-    gcloud auth application-default login
+    if [ -e /dev/tty ]; then
+        gcloud auth application-default login < /dev/tty
+    else
+        gcloud auth application-default login
+    fi
 fi
 echo "✅ 本地凭据认证有效"
 
@@ -28,7 +32,13 @@ echo "✅ 本地凭据认证有效"
 if [ -z "${PROJECT_ID:-}" ]; then
     CURRENT_PROJECT=$(gcloud config get-value project 2>/dev/null || true)
     if [ -n "$CURRENT_PROJECT" ] && [ "$CURRENT_PROJECT" != "(unset)" ]; then
-        read -p "使用当前 GCP 项目 [$CURRENT_PROJECT]? (Y/n / 输入新 Project ID): " input_proj
+        if [ -e /dev/tty ]; then
+            read -r -p "使用当前 GCP 项目 [$CURRENT_PROJECT]? (Y/n / 输入新 Project ID): " input_proj < /dev/tty || true
+        elif [ -t 0 ]; then
+            read -r -p "使用当前 GCP 项目 [$CURRENT_PROJECT]? (Y/n / 输入新 Project ID): " input_proj || true
+        else
+            input_proj="Y"
+        fi
         input_proj=${input_proj:-Y}
         if [ "$input_proj" = "Y" ] || [ "$input_proj" = "y" ]; then
             PROJECT_ID="$CURRENT_PROJECT"
@@ -36,7 +46,11 @@ if [ -z "${PROJECT_ID:-}" ]; then
             PROJECT_ID="$input_proj"
         fi
     else
-        read -p "请输入您的 GCP Project ID 或数字 Project Number: " PROJECT_ID
+        if [ -e /dev/tty ]; then
+            read -r -p "请输入您的 GCP Project ID 或数字 Project Number: " PROJECT_ID < /dev/tty || true
+        elif [ -t 0 ]; then
+            read -r -p "请输入您的 GCP Project ID 或数字 Project Number: " PROJECT_ID || true
+        fi
     fi
 fi
 
